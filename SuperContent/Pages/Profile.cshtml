@@ -1,0 +1,32 @@
+@page "/profile/{slug}"
+@model SuperContent.Pages.Profile
+
+<div class="row">
+    <div class="col-12">
+        <h1>@Model.Asset.FrontMatter?.Name</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-3">
+        <dl>
+            <dt>Profession</dt>
+            <dd>@Model.Asset.FrontMatter?.Profession</dd>
+            <dt>Hobbies</dt>
+            <dd>
+                <ul>
+                    @if (Model.Asset is { FrontMatter.Hobbies : { } hobbies })
+                    {
+                        @foreach (var hobby in hobbies)
+                        {
+                            <li>@hobby</li>
+                        }
+                    }
+                </ul>
+            </dd>
+        </dl>
+    </div>
+    <div class="col-9">
+        @Model.Asset.Html
+    </div>
+</div>
