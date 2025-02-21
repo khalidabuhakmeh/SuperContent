@@ -19,25 +19,23 @@ public class MarkdownObject<T>
             .WithYamlFormatter(new YamlFormatter())
             .WithCaseInsensitivePropertyMatching()
             .Build();
-    
-    private readonly MarkdownDocument document;
-    
+
     public MarkdownObject(string content)
     {
-        document = Md.Parse(content, MarkdownPipeline);
+        var doc = Md.Parse(content, MarkdownPipeline);
         FrontMatter = default;
         
-        if (document.Descendants<YamlFrontMatterBlock>().FirstOrDefault() is { } fm)
+        if (doc.Descendants<YamlFrontMatterBlock>().FirstOrDefault() is { } fm)
         {
             var yaml = fm.Lines.ToSlice();
             FrontMatter = Deserializer.Deserialize<T>(yaml.Text);
             
             // we don't want front matter after it's processed
-            document.Remove(fm);
+            doc.Remove(fm);
         }
         
         // turn it into HTML once
-        Html = new HtmlString(document.ToHtml());
+        Html = new HtmlString(doc.ToHtml());
     }
 
     public T? FrontMatter { get; private set; }
